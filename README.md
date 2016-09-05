@@ -1,6 +1,6 @@
 # Simple API Tester
-
-Make a `POST` request to `http://localhost:5000/api` and the JSON payload will be logged to a file in the **request** directory.
+- Make a `GET` request to `http://localhost:5000/api` and the contents of `/data/data.json` will be returned.  
+- Make a `POST` request to `http://localhost:5000/api` and the JSON payload will be logged to a file in the **request** directory. 
 
 ## Basic Usage
 1) Clone the repo  
