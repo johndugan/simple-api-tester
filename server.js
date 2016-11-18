@@ -6,7 +6,7 @@ const api = express.Router();
 const dateFormat = require('dateformat');
 const createFile = (method) => `${method}_${dateFormat(new Date(), 'mmdd_hhMM-sstt')}.json`;
 const logFile = (path, file) => `${__dirname}/${path}/${file}`;
-const logRes = (file) => `Success! View contents in "/request/${file}"`;
+const logRes = (file) => `Success! View contents in "/request/${file}"\n`;
 
 // https://github.com/jprichardson/node-jsonfile
 const jsonFile = require('jsonfile');
