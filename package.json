@@ -14,5 +14,8 @@
         "dateformat": "^1.0.12",
         "express": "^4.14.0",
         "jsonfile": "^2.3.1"
+    },
+    "devDependencies": {
+        "eslint-config-johndugan": "^1.0.6"
     }
 }
