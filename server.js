@@ -1,34 +1,48 @@
+/* eslint no-console:off, new-cap:off */
 const express = require('express');
-const app = express();
-const api = express.Router();
-
-// https://github.com/felixge/node-dateformat
+const bodyParser = require('body-parser');
 const dateFormat = require('dateformat');
-const createFile = (method) => `${method}_${dateFormat(new Date(), 'mmdd_hhMM-sstt')}.json`;
-const logFile = (path, file) => `${__dirname}/${path}/${file}`;
-const logRes = (file) => `Success! View contents in "/request/${file}"`;
-
-// https://github.com/jprichardson/node-jsonfile
 const jsonFile = require('jsonfile');
+
+// -----
+// SETUP
+// -----
+
+const app = express();
+const apiRouter = express.Router();
 jsonFile.spaces = 4;
 
-// https://github.com/expressjs/body-parser
-const bodyParser = require('body-parser');
-app.use(bodyParser.json());
+// -------
+// HELPERS
+// -------
 
+function createFile(method) {
+    var colon = String.fromCodePoint(42889);
+    return `${method}_${dateFormat(
+        new Date(),
+        `yyyy-mm-dd_tt_h${colon}MM${colon}ss`
+    )}.json`;
+}
+function logFile(path, file) {
+    return `${__dirname}/${path}/${file}`;
+}
+function logRes(file) {
+    return `Success! View contents in "/request/${file}"`;
+}
 
-app.get('/', (req, res) => {
-    res.sendFile(`${__dirname}/index.html`);
-});
+app.use(bodyParser.json()); // <- middleware
 
-// API routes
-// ----------
-api.route('/')
+// ------
+// ROUTER
+// ------
+
+apiRouter
+    .route('/')
     .get((req, res) => {
         res.sendFile(`${__dirname}/data/data.json`);
     })
     .post((req, res) => {
-        let file = createFile('post');
+        var file = createFile('post');
         jsonFile.writeFile(logFile('request', file), req.body, (err) => {
             if (err) {
                 console.error(err);
@@ -37,13 +51,24 @@ api.route('/')
         res.send(logRes(file));
     });
 
-// Prepend API routes with /api
-app.use('/api', api);
+// ------
+// ROUTES
+// ------
 
-app.listen(5000, (err) => {
+app.get('/', (req, res) => {
+    res.sendFile(`${__dirname}/index.html`);
+});
+app.use('/api', apiRouter); // <- middleware (apply apiRouter to all /api routes)
+
+// ------
+// SERVER
+// ------
+
+const port = process.env.PORT || 5000;
+app.listen(port, (err) => {
     if (err) {
         console.error(err);
         return;
     }
-    console.log('Listening at http://localhost:5000');
+    console.log(`Listening at http://localhost:${port}`);
 });
